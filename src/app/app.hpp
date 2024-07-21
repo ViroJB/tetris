@@ -1,8 +1,12 @@
 #pragma once
 
-#include <fmt/core.h>
+#include "../app/global.hpp"
+#include "../game/game.hpp"
+#include "../game/game_state.hpp"
 
 namespace Tetris {
+
+extern GameState gameState;
 
 class App {
    public:
@@ -12,6 +16,7 @@ class App {
     bool TestThis();
 
    private:
+    Game game;
 };
 
 }  // namespace Tetris

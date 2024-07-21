@@ -13,6 +13,11 @@ add_executable(tetris
     src/app/app.cpp
     src/app/main.cpp
     src/config/config.cpp
+    src/blocks/block.cpp
+    src/board/board.cpp
+    src/game/game.cpp
+    src/player/player.cpp
+    src/renderer/renderer.cpp
 )
 target_link_libraries(tetris PRIVATE fmt::fmt)
 
@@ -23,6 +28,12 @@ add_executable(tests
     tests/main.cpp
     tests/app_test.cpp
     src/app/app.cpp
+    src/config/config.cpp
+    src/blocks/block.cpp
+    src/board/board.cpp
+    src/game/game.cpp
+    src/player/player.cpp
+    src/renderer/renderer.cpp
 )
 
 target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main fmt::fmt)

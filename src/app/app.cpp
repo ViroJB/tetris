@@ -3,11 +3,13 @@
 namespace Tetris {
 
 App::App() {
-    fmt::print("Hello, World!\n");
+    fmt::print("App Constructor\n");
+
+    game.run();
 }
- 
+
 bool App::TestThis() {
     return true;
 }
 
-}
+}  // namespace Tetris
