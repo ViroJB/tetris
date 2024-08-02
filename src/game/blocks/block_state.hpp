@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "../app/global.hpp"
+#include "app/global.hpp"
 
 namespace Tetris
 {

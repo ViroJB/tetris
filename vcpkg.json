@@ -1,6 +1,9 @@
 {
   "dependencies": [
     "gtest",
-    "fmt"
+    "fmt",
+    "glfw3",
+    "glew",
+    "glm"
   ]
 }

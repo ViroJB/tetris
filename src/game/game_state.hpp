@@ -1,29 +1,32 @@
 #pragma once
 
-#include "../blocks/block_state.hpp"
-#include "../board/board_state.hpp"
-#include "../player/player_state.hpp"
+#include "blocks/block_state.hpp"
+#include "board/board_state.hpp"
+#include "player/player_state.hpp"
 
 namespace Tetris {
 
+enum class GameStateType { GAME, MENU, PAUSE, GAME_OVER, EXIT };
+
 class GameState {
    public:
-    PlayerState* playerState;
-    BoardState* boardState;  // do we save the "attached" blocks in the game field?
-    BlockState* blockState;
+    std::shared_ptr<PlayerState> playerState;
+    std::shared_ptr<BoardState> boardState;  // do we save the "attached" blocks in the game field?
+    std::shared_ptr<BlockState> blockState;
 
-    static GameState* getInstance() {
-        if (!m_instance) {
-            fmt::print("GameState creation\n");
-            m_instance = new GameState();
-        }
-        return m_instance;
+    GameStateType current = GameStateType::GAME;
+
+    static GameState& getInstance() {
+        static GameState instance;
+        return instance;
     }
+
+    GameState(const GameState&) = delete;
+    GameState& operator=(const GameState&) = delete;
 
    private:
     GameState() {
     }
-    static GameState* m_instance;
 };
 
 }  // namespace Tetris

@@ -10,8 +10,8 @@ Block::~Block() {
     fmt::print("Block Destructor\n");
 }
 
-BlockState* Block::getState() {
-    return &m_blockState;
+std::shared_ptr<BlockState> Block::getState() {
+    return m_state;
 }
 
 }  // namespace Tetris

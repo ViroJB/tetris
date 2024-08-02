@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fmt/core.h>
-#include "../config/config.hpp"
+#include "config/config.hpp"
 // #include "../app/assert.hpp" // i think this breaks because the gamestate hasnt been initialized yet
 
 namespace Tetris {
@@ -17,10 +17,10 @@ struct Size {
 };
 
 struct Color {
-    int r;
-    int g;
-    int b;
-    int a;
+    float r;
+    float g;
+    float b;
+    float a;
 };
 
 struct Rect {

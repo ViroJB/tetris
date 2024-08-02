@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../app/global.hpp"
-#include "../game/game.hpp"
-#include "../game/game_state.hpp"
+#include "app/global.hpp"
+#include "game/game.hpp"
+#include "game/game_state.hpp"
 
 namespace Tetris {
 
@@ -16,7 +16,7 @@ class App {
     bool TestThis();
 
    private:
-    Game game;
+    std::unique_ptr<Game> m_game;
 };
 
 }  // namespace Tetris

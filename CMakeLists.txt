@@ -6,20 +6,31 @@ project(tetris)
 
 set(CMAKE_BUILD_TYPE Debug) 
 
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
 find_package(GTest CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 add_executable(tetris 
     src/app/app.cpp
     src/app/main.cpp
     src/config/config.cpp
-    src/blocks/block.cpp
-    src/board/board.cpp
     src/game/game.cpp
-    src/player/player.cpp
-    src/renderer/renderer.cpp
+    src/game/player/player.cpp
+    src/game/blocks/block.cpp
+    src/game/board/board.cpp
+    src/opengl/opengl_manager.cpp
+    src/opengl/renderer/renderer.cpp
+    src/opengl/renderer/shaders/shader_manager.cpp
+    src/opengl/input/input.cpp
 )
 target_link_libraries(tetris PRIVATE fmt::fmt)
+target_link_libraries(tetris PRIVATE OpenGL::GL GLEW::GLEW glfw glm::glm)
 
 enable_testing()
 
@@ -29,12 +40,15 @@ add_executable(tests
     tests/app_test.cpp
     src/app/app.cpp
     src/config/config.cpp
-    src/blocks/block.cpp
-    src/board/board.cpp
     src/game/game.cpp
-    src/player/player.cpp
-    src/renderer/renderer.cpp
+    src/game/player/player.cpp
+    src/game/blocks/block.cpp
+    src/game/board/board.cpp
+    src/opengl/renderer/renderer.cpp
 )
 
-target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main fmt::fmt)
+target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+target_link_libraries(tests
+    PRIVATE fmt::fmt
+    OpenGL::GL GLEW::GLEW glfw glm)
 add_test(AllTests tests)

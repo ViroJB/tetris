@@ -2,24 +2,24 @@
 
 #include <fmt/core.h>
 
-#include "../game/game_state.hpp"
+#include "game/game_state.hpp"
 
 namespace Tetris {
 
-inline void assert(bool condition, const char* message) {
+inline void Assert(bool condition, const char* message) {
     if (!condition) {
         fmt::print("Assertion failed: {}\n", message);
 
-        GameState* gs = GameState::getInstance();
+        auto& gs = GameState::getInstance();
 
         // player state
-        fmt::print("Player State: {}\n", gs->playerState->position.x);
+        fmt::print("Player State: {}\n", gs.playerState->position.x);
 
         // board state
-        // fmt::print("Board State: {}\n", gs->boardState->board);
+        // fmt::print("Board State: {}\n", gs.boardState->board);
 
         // block state
-        fmt::print("Block State: {}\n", gs->blockState->position.x);
+        fmt::print("Block State: {}\n", gs.blockState->position.x);
 
         std::exit(1);
     }

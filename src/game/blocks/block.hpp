@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../app/global.hpp"
+#include "app/global.hpp"
 #include "block_state.hpp"
 
 namespace Tetris {
@@ -10,10 +10,10 @@ class Block {
     Block();
     ~Block();
 
-    BlockState* getState();
+    std::shared_ptr<BlockState> getState();
 
    private:
-    BlockState m_blockState;
+    std::shared_ptr<BlockState> m_state;
 };
 
 }  // namespace Tetris
