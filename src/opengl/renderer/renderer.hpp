@@ -5,6 +5,7 @@
 #include <fmt/core.h>
 
 #include "game/game_state.hpp"
+#include "opengl/renderer/shaders/shader_manager.hpp"
 
 namespace Tetris {
 
@@ -19,22 +20,13 @@ class Renderer {
 
    private:
     GLFWwindow* m_window;
+    unsigned int m_blockVAO, m_blockVBO, m_blockEBO;
+    std::unique_ptr<ShaderManager> m_shaderManager;
+
+    void initializeVertexData();
 };
 
 }  // namespace Tetris
-
-// #include <GL/glew.h>
-// #include <GLFW/glfw3.h>
-// #include <fmt/core.h>
-
-// #include <array>
-// #include <string>
-// #include <vector>
-// #include <list>
-
-// #include "../game_object/game_object.h"
-// #include "../enemy/enemy.h"
-// #include "../managers/shader_manager.h"
 
 // class Renderer {
 //    public:

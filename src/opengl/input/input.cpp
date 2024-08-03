@@ -1,6 +1,8 @@
 #include "input.hpp"
 
 Input::Input(GLFWwindow* window) {
+    fmt::print("Input constructor\n");
+
     glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, keyCallback);
 }

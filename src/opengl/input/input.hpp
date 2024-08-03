@@ -2,6 +2,7 @@
 
 #include <map>
 #include <GLFW/glfw3.h>
+#include <fmt/core.h>
 
 class Input {
    public:

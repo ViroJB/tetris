@@ -12,8 +12,11 @@ class App {
    public:
     App();
     ~App();
+    
+    void init();
+    void run();
 
-    bool TestThis();
+    bool testThis();
 
    private:
     std::unique_ptr<Game> m_game;

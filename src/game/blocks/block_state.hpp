@@ -1,19 +1,10 @@
-#pragma once 
+#pragma once
 
 #include "app/global.hpp"
 
-namespace Tetris
-{
+namespace Tetris {
 
-enum class BlockType {
-    I,
-    O,
-    T,
-    S,
-    Z,
-    J,
-    L
-};
+enum class BlockType { I, O, T, S, Z, J, L };
 
 struct BlockState {
     BlockType type;
@@ -21,4 +12,4 @@ struct BlockState {
     int rotation;
     Position position;
 };
-} // namespace Tetris
+}  // namespace Tetris

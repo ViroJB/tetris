@@ -5,12 +5,47 @@ namespace Tetris {
 Renderer::Renderer() {
     fmt::print("Renderer Constructor\n");
 
+    m_shaderManager = std::make_unique<ShaderManager>();
+    initializeVertexData();
+
     // m_shaderProgram = m_shaderManager.compileAndLinkShaders();
     // glUseProgram(m_shaderProgram);
 }
- 
+
 Renderer::~Renderer() {
     fmt::print("Renderer Destructor\n");
+}
+
+void Renderer::initializeVertexData() {
+    float vertices[] = {
+        0.5f,  0.5f,  0.0f,  // top right
+        0.5f,  -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f, 0.5f,  0.0f   // top left
+    };
+    unsigned int indices[] = {
+        // note that we start from 0!
+        0, 1, 3,  // first Triangle
+        1, 2, 3   // second Triangle
+    };
+
+    // block vao, vbo and ebo
+    glGenVertexArrays(1, &m_blockVAO);
+    glGenBuffers(1, &m_blockVBO);
+    glGenBuffers(1, &m_blockEBO);
+    glBindVertexArray(m_blockVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_blockVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_blockEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Renderer::render(const GameState& state) {
@@ -18,6 +53,13 @@ void Renderer::render(const GameState& state) {
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(m_shaderManager->getShaderProgram());
+    GLint positionLoc = glGetAttribLocation(m_shaderManager->getShaderProgram(), "position");
+    glUniformMatrix3fv(positionLoc, 1, GL_FALSE, glm::value_ptr(glm::mat3(0.0f)));
+
+    glBindVertexArray(m_blockVAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // draw blocks
     // for (auto& obj : blocks) {
@@ -33,9 +75,6 @@ void Renderer::render(const GameState& state) {
 void Renderer::setWindow(GLFWwindow* window) {
     m_window = window;
 }
-
-
-
 
 // void Renderer::setShaderProgram(GLuint shaderProgram) {
 //     m_shaderProgram = shaderProgram;

@@ -3,7 +3,10 @@
 namespace Tetris {
 
 ShaderManager::ShaderManager() {
-    loadShaderSourcesFromFile("src/shaders/shader.vert.glsl", "src/shaders/shader.frag.glsl");
+    fmt::print("ShaderManager Constructor\n");
+
+    loadShaderSourcesFromFile("src/opengl/renderer/shaders/shader.vert.glsl", "src/opengl/renderer/shaders/shader.frag.glsl");
+    compileAndLinkShaders();
 }
 
 void ShaderManager::loadShaderSourcesFromFile(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
@@ -45,7 +48,7 @@ void ShaderManager::transform(glm::mat4 modelMatrix, Color* color) {
     glUniform4f(colorLoc, color->r, color->g, color->b, color->a);
 }
 
-GLuint ShaderManager::compileAndLinkShaders() {
+void ShaderManager::compileAndLinkShaders() {
     const char* vertexShaderSource = m_vertexShaderSource.c_str();
     const char* fragmentShaderSource = m_fragmentShaderSource.c_str();
 
@@ -84,7 +87,9 @@ GLuint ShaderManager::compileAndLinkShaders() {
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
+}
+ 
+GLuint ShaderManager::getShaderProgram() {
     return m_shaderProgram;
 }
 

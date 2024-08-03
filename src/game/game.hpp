@@ -7,10 +7,9 @@
 #include "board/board.hpp"
 #include "game_state.hpp"
 #include "opengl/opengl_manager.hpp"
-#include "opengl/renderer/renderer.hpp"
 #include "opengl/input/input.hpp"
+#include "opengl/renderer/renderer.hpp"
 #include "player/player.hpp"
-
 
 namespace Tetris {
 
@@ -19,6 +18,7 @@ class Game {
     Game();
     ~Game();
 
+    void init();
     void mainLoop();
 
    private:

@@ -26,6 +26,7 @@ class GameState {
 
    private:
     GameState() {
+        fmt::print("GameState Constructor\n");
     }
 };
 

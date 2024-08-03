@@ -18,7 +18,8 @@ namespace Tetris {
 class ShaderManager {
    public:
     ShaderManager();
-    GLuint compileAndLinkShaders();
+    GLuint getShaderProgram();
+    void compileAndLinkShaders();
     void loadShaderSourcesFromFile(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     void transform(glm::mat4 modelMatrix, Color* color);
 

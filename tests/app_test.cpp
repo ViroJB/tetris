@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../src/app/app.h"
+#include "../src/app/app.hpp"
 
-TEST(AppTest, TestThis) {
+TEST(AppTest, testThis) {
     Tetris::App* app = new Tetris::App;
-    EXPECT_TRUE(app->TestThis());
+    EXPECT_TRUE(app->testThis());
 }

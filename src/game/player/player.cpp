@@ -5,10 +5,12 @@ namespace Tetris {
 Player::Player() {
     fmt::print("Player Constructor\n");
 
+    m_state = std::make_shared<PlayerState>();
+
     // GameState* gameState = GameState::getInstance();
     // gameState->playerState->position;
 
-    Assert(true, "assert test");
+    // Assert(true, "assert test");
 }
 
 Player::~Player() {

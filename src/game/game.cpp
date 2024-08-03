@@ -2,7 +2,26 @@
 
 namespace Tetris {
 
+//
+//
+// NEXT: 
+// - draw a block
+// - create a block
+// - draw background
+// - draw board 
+//
+//
+
 Game::Game() : m_gameState(GameState::getInstance()) {
+    fmt::print("Game Constructor\n");
+    init();
+
+    // Assert(true, "Board state not equal");
+}
+
+void Game::init() {
+    fmt::print("Game init\n");
+
     m_openGLManager = std::make_unique<OpenGLManager>();
     m_openGLManager->initialize();
     m_openGLManager->createWindow("Tetris", 800, 600);
@@ -19,9 +38,6 @@ Game::Game() : m_gameState(GameState::getInstance()) {
     m_gameState.boardState = m_board->getState();
     m_gameState.playerState = m_player->getState();
     m_gameState.blockState = m_activeBlock->getState();
-
-    // assert(true, "Board state not equal");
-    fmt::print("Game Constructor\n");
 }
 
 Game::~Game() {
@@ -29,7 +45,7 @@ Game::~Game() {
 }
 
 void Game::mainLoop() {
-    fmt::print("Game Running\n");
+    fmt::print("Game running\n");
 
     // todo opengl stuff like input should be in the opengl-manager
     while (!glfwWindowShouldClose(m_openGLManager->getWindow())) {
@@ -40,6 +56,7 @@ void Game::mainLoop() {
         }
 
         // update game state
+
         // render
         m_renderer->render(m_gameState);
     }
