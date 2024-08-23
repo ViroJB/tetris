@@ -1,5 +1,12 @@
 #pragma once
 
+#include <vector>
+#include "game/tetromino/tetromino_state.hpp"
+
+namespace Tetris {
+
 struct BoardState {
-    int board[20][10] = {0};
+    std::vector<std::vector<std::unique_ptr<Block>>> board;
 };
+
+}  // namespace Tetris

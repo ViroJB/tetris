@@ -4,6 +4,7 @@
     "fmt",
     "glfw3",
     "glew",
-    "glm"
+    "glm",
+    "ms-gsl"
   ]
 }

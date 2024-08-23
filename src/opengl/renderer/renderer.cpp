@@ -7,9 +7,6 @@ Renderer::Renderer() {
 
     m_shaderManager = std::make_unique<ShaderManager>();
     initializeVertexData();
-
-    // m_shaderProgram = m_shaderManager.compileAndLinkShaders();
-    // glUseProgram(m_shaderProgram);
 }
 
 Renderer::~Renderer() {
@@ -17,16 +14,75 @@ Renderer::~Renderer() {
 }
 
 void Renderer::initializeVertexData() {
+    // grid
+
+    // Define the grid dimensions
+    const int rows = 22;
+    const int cols = 22;
+    const float rectWidth = 2.0f / rows;
+
+    // Create a vector to hold the vertices for the grid lines
+    std::vector<float> gridVertices;
+
+    // Generate the vertices for the horizontal lines
+    for (int row = 0; row <= rows; ++row) {
+        float y = 1.0f - row * rectWidth;  // starting from top
+        gridVertices.push_back(-1.0f);     // x1
+        gridVertices.push_back(y);         // y1
+        gridVertices.push_back(0.0f);      // z1
+        gridVertices.push_back(1.0f);      // x2
+        gridVertices.push_back(y);         // y2
+        gridVertices.push_back(0.0f);      // z2
+    }
+
+    // Generate the vertices for the vertical lines
+    for (int col = 0; col <= cols; ++col) {
+        float x = -1.0f + col * rectWidth;  // starting from left
+        gridVertices.push_back(x);          // x1
+        gridVertices.push_back(1.0f);       // y1
+        gridVertices.push_back(0.0f);       // z1
+        gridVertices.push_back(x);          // x2
+        gridVertices.push_back(-1.0f);      // y2
+        gridVertices.push_back(0.0f);       // z2
+    }
+
+    glGenVertexArrays(1, &m_gridVAO);
+    glGenBuffers(1, &m_gridVBO);
+
+    glBindVertexArray(m_gridVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_gridVBO);
+    glBufferData(GL_ARRAY_BUFFER, gridVertices.size() * sizeof(float), gridVertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // the height should be 22 blocks
+    float blockSize = 2.0f / 22.0f;
+    // starting position is bottom left
+    float startingX = -1.0f;
+    float startingY = -1.0f;
+
     float vertices[] = {
-        0.5f,  0.5f,  0.0f,  // top right
-        0.5f,  -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f, 0.5f,  0.0f   // top left
+        startingX,  // bottom left
+        startingY,
+        0.0f,
+        startingX,  // bottom right
+        startingY + blockSize,
+        0.0f,
+        startingX + blockSize,  // top right
+        startingY + blockSize,
+        0.0f,
+        startingX + blockSize,  // top left
+        startingY,
+        0.0f,
     };
+
     unsigned int indices[] = {
-        // note that we start from 0!
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
+        0, 1, 2,  // first triangle
+        0, 2, 3   // second triangle
     };
 
     // block vao, vbo and ebo
@@ -48,81 +104,109 @@ void Renderer::initializeVertexData() {
     glBindVertexArray(0);
 }
 
-void Renderer::render(const GameState& state) {
-    // fmt::print("Rendering\n");
+void Renderer::drawGrid() {
+    glUseProgram(m_shaderManager->getShaderProgram());
+    glBindVertexArray(m_gridVAO);
 
+    // Set the color for the grid lines
+    Color color = {0.4f, 0.4f, 0.4f, 1.0f};
+    glm::mat4 model = glm::mat4(1.0f);
+    m_shaderManager->transform(model, &color);
+
+    // Draw the grid lines
+    glDrawArrays(GL_LINES, 0, 276);
+
+    glBindVertexArray(0);
+}
+
+void Renderer::drawRectangle(const glm::vec3& position, const Color* color) {
+    glUseProgram(m_shaderManager->getShaderProgram());
+    glBindVertexArray(m_blockVAO);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);  // glm::vec3(position[0], position[1], position[2]));
+    // model = glm::rotate(model, glm::radians(m_rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+    m_shaderManager->transform(model, color);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void Renderer::drawGameFieldBorder() {
+    // draw the gamefield border
+    Color borderBlockColor = {0.24f, 0.24f, 0.24f, 1.0f};
+    for (int i = 0; i < 22; i++) {
+        drawRectangle(convertPosition(Position{5, i}.toPair()), &borderBlockColor);
+        drawRectangle(convertPosition(Position{16, i}.toPair()), &borderBlockColor);
+    }
+
+    for (int i = 6; i <= 16; i++) {
+        drawRectangle(convertPosition(Position{i, 0}.toPair()), &borderBlockColor);
+        drawRectangle(convertPosition(Position{i, 21}.toPair()), &borderBlockColor);
+    }
+}
+
+// convert a position in the gamefield to a position in the screen
+glm::vec3 Renderer::convertPosition(std::pair<int, int> position) {
+    // assuming the screen is 22x22 blocks
+    float x = (position.first * (2.0f / 22.0f));
+    float y = (position.second * (2.0f / 22.0f));
+    return glm::vec3{x, y, 0.0f};
+}
+
+void Renderer::render(const GameState& state) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(m_shaderManager->getShaderProgram());
-    GLint positionLoc = glGetAttribLocation(m_shaderManager->getShaderProgram(), "position");
-    glUniformMatrix3fv(positionLoc, 1, GL_FALSE, glm::value_ptr(glm::mat3(0.0f)));
+    // draw blocks on the board
+    // todo need an offset here to draw the blocks in the correct position
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (state.boardState->board[i][j]->isActive) {
+                std::pair<int, int> position = Position{j, i}.toPair();
+                position.first += m_offsetX;
+                position.second += m_offsetY;
+                drawRectangle(convertPosition(position), &state.boardState->board[i][j]->color);
+            }
+        }
+    }
 
-    glBindVertexArray(m_blockVAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    // draw blocks
-    // for (auto& obj : blocks) {
-    //     m_shaderManager.transform(obj.getGameObject()->getModelMatrix(), obj.getGameObject()->getColor());
-    //     glBindVertexArray(m_blockVAO);
-    //     glDrawArrays(GL_TRIANGLES, 0, 3);
+    // draw the active tetromino
+    // std::vector<Position> positions = calculateGamefieldPositions(state);
+    // for (const auto& position : positions) {
+    //     std::pair<int, int> tmpPosition = position.toPair();
+    //     tmpPosition.first += m_offsetX;
+    //     tmpPosition.second += m_offsetY;
+    //     drawRectangle(convertPosition(tmpPosition), &state.tetrominoState->blocks[0].color);
     // }
+
+    for (const auto& block : state.tetrominoState->blocks) {
+        std::pair<int, int> tmpPosition = block.position.toPair();
+        tmpPosition.first += m_offsetX;
+        tmpPosition.second += m_offsetY;
+        drawRectangle(convertPosition(tmpPosition), &block.color);
+    }
+
+    drawGameFieldBorder();
+    drawGrid();
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
+// convert the positions of the tetromino block (which are relative to the rotationpoint) to positions on the gamefield
+std::vector<Position> Renderer::calculateGamefieldPositions(const GameState& state) const {
+    std::vector<Position> boardPositions;
+
+    for (const auto& block : state.tetrominoState->blocks) {
+        Position boardPosition =
+            state.tetrominoState->position + (block.position - state.tetrominoState->rotationPoint);
+        boardPositions.push_back(boardPosition);
+    }
+
+    return boardPositions;
+}
+
 void Renderer::setWindow(GLFWwindow* window) {
     m_window = window;
 }
-
-// void Renderer::setShaderProgram(GLuint shaderProgram) {
-//     m_shaderProgram = shaderProgram;
-// }
-
-// GLuint Renderer::getShaderProgram() {
-//     return m_shaderProgram;
-// }
-
-// void Renderer::printCurrentMatrix(GameObject* obj) {
-//     auto modelMatrix = obj->getModelMatrix();
-//     fmt::print("Model matrix:\n");
-//     for (int i = 0; i < 4; ++i) {
-//         fmt::print("{}, {}, {}, {}\n", modelMatrix[i][0], modelMatrix[i][1], modelMatrix[i][2], modelMatrix[i][3]);
-//     }
-// }
-
-// std::array<GLfloat, 21> Renderer::getCombinedData(GameObject* obj) {
-//     auto vertices = obj->calculateTriangleVertices();
-//     std::array<GLfloat, 21> combinedData;
-
-//     for (int i = 0; i < 3; ++i) {
-//         combinedData[i * 7 + 0] = vertices[i].x;   // x
-//         combinedData[i * 7 + 1] = vertices[i].y;   // y
-//         combinedData[i * 7 + 2] = vertices[i].z;   // z
-//         combinedData[i * 7 + 3] = obj->m_color.r;  // r
-//         combinedData[i * 7 + 4] = obj->m_color.g;  // g
-//         combinedData[i * 7 + 5] = obj->m_color.b;  // b
-//         combinedData[i * 7 + 6] = obj->m_color.a;  // a
-//     }
-
-//     return combinedData;
-// }
-
-// void Renderer::initializeVertexData(std::vector<std::vector<float>> vertices) {
-//     // block vao and vbo
-//     glGenVertexArrays(1, &m_playerVAO);
-//     glGenBuffers(1, &m_playerVBO);
-//     glBindVertexArray(m_playerVAO);
-//     glBindBuffer(GL_ARRAY_BUFFER, m_playerVBO);
-//     glBufferData(GL_ARRAY_BUFFER, vertices[0].size() * sizeof(float), vertices[0].data(), GL_STATIC_DRAW);
-//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)0);
-//     glEnableVertexAttribArray(0);
-//     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-//     glEnableVertexAttribArray(1);
-
-//     glBindBuffer(GL_ARRAY_BUFFER, 0);
-//     glBindVertexArray(0);
-// }
 
 }  // namespace Tetris

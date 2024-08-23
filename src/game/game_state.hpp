@@ -1,20 +1,20 @@
 #pragma once
 
-#include "blocks/block_state.hpp"
 #include "board/board_state.hpp"
 #include "player/player_state.hpp"
+#include "tetromino/tetromino_state.hpp"
 
 namespace Tetris {
 
-enum class GameStateType { GAME, MENU, PAUSE, GAME_OVER, EXIT };
+enum class GameMode { GAME_RUNNING, MENU, PAUSE, GAME_OVER, EXIT };
 
 class GameState {
    public:
     std::shared_ptr<PlayerState> playerState;
-    std::shared_ptr<BoardState> boardState;  // do we save the "attached" blocks in the game field?
-    std::shared_ptr<BlockState> blockState;
+    std::shared_ptr<BoardState> boardState;
+    std::shared_ptr<TetrominoState> tetrominoState; 
 
-    GameStateType current = GameStateType::GAME;
+    GameMode mode = GameMode::GAME_RUNNING;
 
     static GameState& getInstance() {
         static GameState instance;

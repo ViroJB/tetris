@@ -19,7 +19,7 @@ inline void Assert(bool condition, const char* message) {
         // fmt::print("Board State: {}\n", gs.boardState->board);
 
         // block state
-        fmt::print("Block State: {}\n", gs.blockState->position.x);
+        // fmt::print("Block State: {}\n", gs.blockState->position.x);
 
         std::exit(1);
     }

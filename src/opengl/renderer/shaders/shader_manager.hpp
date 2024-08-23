@@ -21,7 +21,7 @@ class ShaderManager {
     GLuint getShaderProgram();
     void compileAndLinkShaders();
     void loadShaderSourcesFromFile(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-    void transform(glm::mat4 modelMatrix, Color* color);
+    void transform(glm::mat4 modelMatrix, const Color* color);
 
    private:
     std::string m_vertexShaderSource;
