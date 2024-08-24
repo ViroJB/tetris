@@ -11,9 +11,6 @@ Board::Board() {
     for (int i = 0; i < 20; i++) {
         addEmptyRow();
     }
-
-    m_state->board[19][0]->isActive = true;
-    m_state->board[19][0]->color = Color{1.0f, 0.4f, 0.0f};
 }
 
 Board::~Board() {
@@ -41,7 +38,7 @@ void Board::attachTetromino(std::unique_ptr<Tetromino> tetromino) {
     }
 }
 
-std::vector<int> Board::checkForFullRows() {
+std::vector<int> Board::getFullRows() {
     std::vector<int> fullRows;
     for (int i = 0; i < 20; i++) {
         bool full = true;

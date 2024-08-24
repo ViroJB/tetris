@@ -44,6 +44,17 @@ void Game::createNewTetromino() {
     m_gameState.tetrominoState = m_activeTetromino->getState();
 }
 
+void Game::removeFullRows() {
+    std::vector<int> fullRows = m_board->getFullRows();
+    for (int row : fullRows) {
+        m_board->removeRow(row);
+    }
+
+    fmt::print("Removed {} rows\n", fullRows.size());
+
+    // todo update score
+}
+
 int Game::createRandomNumber(int min, int max) {
     return min + (rand() % static_cast<int>(max - min + 1));
 }
@@ -63,11 +74,6 @@ bool Game::isDownMoveValid(std::shared_ptr<BoardState> boardState, std::shared_p
             lowestBlocks[column] = row;
         }
     }
-
-    // print all lowest blocks
-    // for (int i = 0; i < 10; i++) {
-    //     fmt::print("Lowest block in column {}: {}\n", i, lowestBlocks[i]);
-    // }
 
     // check if each of those can move down, if one can't, return false
     for (int column = 0; column < 10; column++) {
@@ -187,6 +193,7 @@ void Game::mainLoop() {
         } else {
             m_gameTime += Timer::getDeltaTime();
         }
+        removeFullRows();
 
         // render
         m_renderer->render(m_gameState);

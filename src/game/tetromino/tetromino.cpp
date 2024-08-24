@@ -71,6 +71,18 @@ void Tetromino::rotateClockwise() {
         block.position.x = tmpX;
         block.position.y = tmpY;
     }
+
+    // todo should this be here? at least the hardcoded numbers should be somewhere else
+    // and we can combine it with the for loop above
+    // debounce on walls
+    for (auto& block : m_state->blocks) {
+        if (block.position.x < 0) {
+            moveRight();
+        }
+        if (block.position.x > 9) {
+            moveLeft();
+        }
+    }
 }
 
 void Tetromino::rotateCounterClockwise() {

@@ -14,7 +14,7 @@ class Board {
     void attachTetromino(std::unique_ptr<Tetromino> tetromino);
     void addEmptyRow();
     void removeRow(int row);
-    std::vector<int> checkForFullRows();
+    std::vector<int> getFullRows();
 
     std::shared_ptr<BoardState> getState();
 

@@ -29,8 +29,9 @@ class Game {
     int createRandomNumber(int min, int max);
     float createRandomFloat(float max);
 
-    void moveTetrominoToBottom();
+    void removeFullRows();
 
+    void moveTetrominoToBottom();
     bool isLeftMoveValid(std::shared_ptr<BoardState> boardState, std::shared_ptr<TetrominoState> tetrominoState);
     bool isRightMoveValid(std::shared_ptr<BoardState> boardState, std::shared_ptr<TetrominoState> tetrominoState);
     bool isDownMoveValid(std::shared_ptr<BoardState> boardState, std::shared_ptr<TetrominoState> tetrominoState);
